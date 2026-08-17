@@ -2,7 +2,7 @@
 const API_KEY = 'c60c30437c5347478f634124261708';
 const API_URL = 'https://api.weatherapi.com/v1/current.json';
 
-let buscando = false; 
+let buscando = false; // Controla buscas simultâneas
 
 // ELEMENTOS DO DOM
 const formBusca = document.getElementById('form-busca');
@@ -12,7 +12,7 @@ const statusMensagem = document.getElementById('status-mensagem');
 const listaFavoritos = document.getElementById('lista-favoritos');
 const mensagemInicial = document.getElementById('mensagem-inicial');
 
-// GERENCIAMENTO DE TEMA (DARK/LIGHT)
+// GERENCIAMENTO DE TEMA DARK/LIGHT
 
 // Cria o botão de toggle dinamicamente
 const headerNav = document.querySelector('header nav ul');
@@ -102,7 +102,7 @@ function renderizarFavoritos() {
     });
 }
 
-// FUNÇÕES DE API (FETCH)
+// FUNÇÕES DE API FETCH
 
 // Atualiza um card existente com novos dados
 function atualizarCard(card, data) {
@@ -127,12 +127,13 @@ function atualizarCard(card, data) {
 
 // Função principal de busca
 async function buscarClima(cidade) {
+    // Se já estiver buscando, não faz nada (proteção contra cliques simultâneos)
     if (buscando) {
         exibirStatus('⏳ Aguarde a busca atual terminar.', 'warning');
         return;
     }
 
-    // Verifica se já existe um card para essa cidade
+    // Verifica se já existe um card para essa cidade (case insensitive)
     const cards = document.querySelectorAll('.card-clima');
     let cardExistente = null;
     for (const card of cards) {
@@ -142,6 +143,7 @@ async function buscarClima(cidade) {
         }
     }
 
+    // Se o card já existe, atualiza em vez de criar outro
     if (cardExistente) {
         exibirStatus(`🔄 Atualizando dados de ${cidade}...`, 'loading');
         try {
@@ -161,6 +163,7 @@ async function buscarClima(cidade) {
         return;
     }
 
+    // Se não existe, faz a busca normal (cria um novo card)
     try {
         buscando = true;
         exibirStatus('⏳ Buscando dados...', 'loading');
@@ -276,12 +279,10 @@ function mostrarSpinner(ativo) {
 
 // EVENTOS
 
-// O evento submit é o único responsável pela busca.
-// O Enter dentro do input já dispara o submit nativamente.
 formBusca.addEventListener('submit', async (e) => {
-    // Impede o recarregamento da página
     e.preventDefault();
 
+    // Se já estiver buscando, não faz nada
     if (buscando) return;
 
     const cidade = inputCidade.value.trim();
@@ -290,17 +291,15 @@ formBusca.addEventListener('submit', async (e) => {
         return;
     }
 
-    // BLOQUEIO IMEDIATO
-    buscando = true;
+    // Desabilita o botão visualmente (não mexe no estado 'buscando')
     const btn = formBusca.querySelector('button[type="submit"]');
     btn.disabled = true;
     btn.textContent = '⏳ Buscando...';
 
-    // Executa a busca
+    // A função buscarClima gerencia o estado 'buscando' internamente
     await buscarClima(cidade);
 
-    // LIBERA 
-    buscando = false;
+    // Reabilita o botão após a conclusão
     btn.disabled = false;
     btn.textContent = '🔍 Buscar';
     inputCidade.value = '';
