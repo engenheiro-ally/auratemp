@@ -1,6 +1,12 @@
-const API_KEY = 'c60c30437c5347478f634124261708'; 
+// =============================================
+// AURATEMP - JavaScript Completo (Sprint 3 - Corrigido)
+// =============================================
 
+//  CONFIGURAÇÕES INICIAIS
+const API_KEY = 'c60c30437c5347478f634124261708'; // Sua chave
 const API_URL = 'https://api.weatherapi.com/v1/current.json';
+
+let buscando = false;
 
 // ELEMENTOS DO DOM
 const formBusca = document.getElementById('form-busca');
@@ -12,17 +18,15 @@ const mensagemInicial = document.getElementById('mensagem-inicial');
 
 // GERENCIAMENTO DE TEMA (DARK/LIGHT)
 
-// Cria o botão de toggle dinamicamente (já que não estava no HTML)
 const headerNav = document.querySelector('header nav ul');
 const toggleLi = document.createElement('li');
 const toggleBtn = document.createElement('button');
 toggleBtn.id = 'toggle-theme';
 toggleBtn.setAttribute('aria-label', 'Alternar tema claro/escuro');
-toggleBtn.textContent = '🌙'; 
+toggleBtn.textContent = '🌙';
 toggleLi.appendChild(toggleBtn);
 headerNav.appendChild(toggleLi);
 
-// Função para aplicar o tema
 function aplicarTema(tema) {
     if (tema === 'dark') {
         document.body.classList.add('dark-mode');
@@ -35,7 +39,6 @@ function aplicarTema(tema) {
     }
 }
 
-// Carrega o tema salvo ou detecta preferência do sistema
 function carregarTema() {
     const temaSalvo = localStorage.getItem('tema');
     if (temaSalvo) {
@@ -47,13 +50,11 @@ function carregarTema() {
     }
 }
 
-// Alterna o tema ao clicar no botão
 toggleBtn.addEventListener('click', () => {
     const isDark = document.body.classList.contains('dark-mode');
     aplicarTema(isDark ? 'light' : 'dark');
 });
 
-// Inicializa o tema
 carregarTema();
 
 // GERENCIAMENTO DE FAVORITOS
@@ -97,7 +98,6 @@ function renderizarFavoritos() {
         </li>
     `).join('');
 
-    // Adiciona eventos de remoção
     listaFavoritos.querySelectorAll('button[data-cidade]').forEach(btn => {
         btn.addEventListener('click', () => {
             removerFavorito(btn.dataset.cidade);
@@ -107,16 +107,65 @@ function renderizarFavoritos() {
 
 // FUNÇÕES DE API (FETCH)
 
+function atualizarCard(card, data) {
+    const {
+        location: { name, country },
+        current: {
+            temp_c,
+            condition: { text, icon },
+            humidity,
+            wind_kph
+        }
+    } = data;
+
+    card.querySelector('.cidade').textContent = `${name}, ${country}`;
+    card.querySelector('.icone img').src = `https:${icon}`;
+    card.querySelector('.icone img').alt = text;
+    card.querySelector('.temp').textContent = `${temp_c}°C`;
+    card.querySelector('.condicao').textContent = text;
+    card.querySelector('.detalhes span:first-child').textContent = `💧 ${humidity}%`;
+    card.querySelector('.detalhes span:last-child').textContent = `💨 ${wind_kph} km/h`;
+}
+
 async function buscarClima(cidade) {
-    const cardsExistentes = document.querySelectorAll('.card-clima');
-    for (const card of cardsExistentes) {
+    // Evita múltiplas buscas simultâneas
+    if (buscando) {
+        exibirStatus('⏳ Aguarde a busca atual terminar.', 'warning');
+        return;
+    }
+
+    // Verifica se já existe um card para essa cidade
+    const cards = document.querySelectorAll('.card-clima');
+    let cardExistente = null;
+    for (const card of cards) {
         if (card.dataset.cidade?.toLowerCase() === cidade.toLowerCase()) {
-            exibirStatus('⚠️ Esta cidade já está na lista.', 'warning');
-            return;
+            cardExistente = card;
+            break;
         }
     }
 
+    // Se o card já existe, atualiza em vez de criar outro
+    if (cardExistente) {
+        exibirStatus(`🔄 Atualizando dados de ${cidade}...`, 'loading');
+        try {
+            buscando = true;
+            const url = `${API_URL}?key=${API_KEY}&q=${encodeURIComponent(cidade)}&lang=pt`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Erro ao atualizar dados');
+            const data = await response.json();
+            atualizarCard(cardExistente, data);
+            exibirStatus('✅ Dados atualizados!', 'success');
+        } catch (error) {
+            exibirStatus('❌ ' + error.message, 'error');
+            console.error(error);
+        } finally {
+            buscando = false;
+        }
+        return;
+    }
+
     try {
+        buscando = true;
         exibirStatus('⏳ Buscando dados...', 'loading');
         mostrarSpinner(true);
 
@@ -143,6 +192,8 @@ async function buscarClima(cidade) {
         mostrarSpinner(false);
         exibirStatus(`❌ ${error.message}`, 'error');
         console.error('Erro ao buscar clima:', error);
+    } finally {
+        buscando = false;
     }
 }
 
@@ -159,7 +210,6 @@ function renderizarCard(data) {
         }
     } = data;
 
-    // Cria o card com Template Literals
     const card = document.createElement('div');
     card.className = 'card-clima';
     card.dataset.cidade = name;
@@ -180,7 +230,6 @@ function renderizarCard(data) {
         </button>
     `;
 
-    // Botão de favoritar
     const btnFav = card.querySelector('.btn-favorito');
     btnFav.addEventListener('click', () => {
         adicionarFavorito(name);
@@ -190,7 +239,6 @@ function renderizarCard(data) {
         btnFav.style.cursor = 'default';
     });
 
-    // Remove a mensagem inicial se existir
     if (mensagemInicial) {
         mensagemInicial.remove();
     }
@@ -203,7 +251,6 @@ function exibirStatus(mensagem, tipo = 'info') {
     statusMensagem.className = `status-${tipo}`;
     statusMensagem.style.display = 'block';
 
-    // Limpa a mensagem após 5 segundos (exceto loading/error)
     if (tipo !== 'loading' && tipo !== 'error') {
         setTimeout(() => {
             if (statusMensagem.textContent === mensagem) {
@@ -231,23 +278,29 @@ function mostrarSpinner(ativo) {
 }
 
 // EVENTOS
-
-// Busca ao submeter o formulário
 formBusca.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
+    if (buscando) return;
+
     const cidade = inputCidade.value.trim();
     if (!cidade) {
         exibirStatus('⚠️ Por favor, digite o nome de uma cidade.', 'warning');
         return;
     }
 
+    const btn = formBusca.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = '⏳ Buscando...';
+
     await buscarClima(cidade);
-    inputCidade.value = ''; 
+
+    btn.disabled = false;
+    btn.textContent = '🔍 Buscar';
+    inputCidade.value = '';
     inputCidade.focus();
 });
 
-// Permite buscar com Enter
 inputCidade.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         formBusca.dispatchEvent(new Event('submit'));
@@ -258,16 +311,12 @@ inputCidade.addEventListener('keypress', (e) => {
 
 carregarFavoritos();
 
-// RECUPERAR FAVORITOS AO CLICAR
 
-// Adiciona evento de clique nos itens da lista de favoritos
-// para buscar o clima da cidade favoritada
 listaFavoritos.addEventListener('click', (e) => {
     const item = e.target.closest('li');
     if (!item) return;
-    
     if (e.target.tagName === 'BUTTON') return;
-    
+
     const cidade = item.textContent.replace('✕', '').trim();
     if (cidade) {
         buscarClima(cidade);
