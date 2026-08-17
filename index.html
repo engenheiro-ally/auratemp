@@ -5,17 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AuraTemp · Previsão do Tempo</title>
     
+    <!-- Pré-conecta à API -->
     <link rel="preconnect" href="https://api.weatherapi.com">
     
+    <!-- Google Fonts para tipografia refinada -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <!-- CABEÇALHO SEMÂNTICO -->
+    <!-- CABEÇALHO -->
     <header role="banner">
         <nav aria-label="Navegação principal">
             <div class="logo">
+                <span class="logo-icon">🌤️</span>
                 <h1>AuraTemp</h1>
-                <span aria-hidden="true">🌤️</span>
             </div>
             <ul>
                 <li><a href="#busca" aria-current="page">Início</a></li>
@@ -28,10 +35,9 @@
     <main>
         <!-- SEÇÃO DE BUSCA -->
         <section id="busca" aria-label="Buscar previsão do tempo">
-            <h2>Descubra o clima agora</h2>
-            <p>Digite o nome de qualquer cidade para ver a temperatura, umidade e condições.</p>
+            <h2>Descubra o clima em qualquer lugar</h2>
+            <p>Digite o nome de uma cidade para ver as condições atuais</p>
             
-            <!-- FORMULÁRIO COM VALIDAÇÃO NATIVA -->
             <form id="form-busca" role="search" aria-label="Formulário de busca por cidade">
                 <div class="grupo-input">
                     <label for="cidade-input" class="sr-only">Nome da cidade</label>
@@ -45,39 +51,42 @@
                         autocomplete="off"
                     >
                     <button type="submit" aria-label="Buscar previsão do tempo">
-                        🔍 Buscar
+                        <span class="btn-text">Buscar</span>
+                        <span class="btn-icon">🔍</span>
                     </button>
                 </div>
                 <small id="ajuda-busca">Insira o nome da cidade em português ou inglês.</small>
             </form>
 
-            <!-- ÁREA PARA MENSAGENS DE STATUS (ACESSIBILIDADE) -->
             <div id="status-mensagem" role="status" aria-live="polite" aria-atomic="true"></div>
         </section>
 
-        <!-- SEÇÃO DE RESULTADOS / CARDS DE PREVISÃO -->
+        <!-- SEÇÃO DE RESULTADOS -->
         <section id="resultados" aria-label="Previsões do tempo">
-            <h2>Resultados</h2>
+            <h2 class="section-title">Resultados</h2>
             <div id="container-cards" class="grid-cards">
-                <p id="mensagem-inicial" aria-live="polite">Pesquise uma cidade para ver a previsão.</p>
+                <p id="mensagem-inicial" class="empty-state" aria-live="polite">
+                    🌍 Pesquise uma cidade para ver a previsão.
+                </p>
             </div>
         </section>
 
         <!-- SEÇÃO DE FAVORITOS -->
         <aside id="favoritos" aria-label="Cidades favoritas">
-            <h2>⭐ Favoritas</h2>
+            <h2 class="section-title">⭐ Favoritas</h2>
             <ul id="lista-favoritos" aria-live="polite">
-                <li>Nenhuma cidade favorita ainda.</li>
+                <li class="empty-fav">Nenhuma cidade favorita ainda.</li>
             </ul>
         </aside>
     </main>
 
-    <!-- RODAPÉ SEMÂNTICO -->
+    <!-- RODAPÉ -->
     <footer role="contentinfo">
         <p>&copy; 2026 <strong>AuraTemp</strong> — Projeto acadêmico para a disciplina <em>Tecnologias para a Internet</em> · Universidade de Uberada - Alisson Ricardo (engenheiro-ally)</p>
         <p>Dados fornecidos por <a href="https://www.weatherapi.com/" target="_blank" rel="noopener noreferrer">WeatherAPI</a></p>
     </footer>
 
+    <!-- JavaScript -->
     <script src="assets/js/app.js" defer></script>
 </body>
 </html>
