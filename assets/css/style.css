@@ -1,1 +1,481 @@
-/* Sprint 2: Estilos do AuraTemp */
+/* VARIÁVEIS E TEMA */
+:root {
+    /* Cores - Tema Claro */
+    --bg-body: #f0f4f8;
+    --bg-card: #ffffff;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --border: #e2e8f0;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --radius: 16px;
+    --transition: 0.3s ease;
+    
+    /* Tipografia */
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* TEMA ESCURO (ATIVADO VIA CLASSE NO BODY) */
+body.dark-mode {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* RESET E BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background var(--transition), color var(--transition);
+    min-height: 100vh;
+}
+
+/* TIPOGRAFIA E UTILITÁRIOS */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+a:hover {
+    color: var(--accent-hover);
+}
+
+/* HEADER E NAVEGAÇÃO */
+header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+    transition: background var(--transition), border var(--transition);
+}
+
+header nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logo span {
+    font-size: 1.5rem;
+}
+
+header nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    align-items: center;
+}
+
+header nav ul li a {
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 0.5rem 0;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+}
+
+header nav ul li a:hover,
+header nav ul li a[aria-current="page"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* BOTÃO DE TEMA */
+#toggle-theme {
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#toggle-theme:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow);
+}
+
+/* MAIN E SEÇÕES */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* SEÇÃO DE BUSCA */
+#busca {
+    background: var(--bg-card);
+    padding: 2.5rem 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    text-align: center;
+    transition: background var(--transition), box-shadow var(--transition);
+}
+
+#busca h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+#busca p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* FORMULÁRIO */
+#form-busca {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.grupo-input {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.grupo-input input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    transition: all var(--transition);
+    outline: none;
+}
+
+.grupo-input input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.grupo-input input::placeholder {
+    color: var(--text-muted);
+}
+
+.grupo-input button {
+    padding: 0.75rem 1.5rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.grupo-input button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+#form-busca small {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+#status-mensagem {
+    margin-top: 0.5rem;
+    min-height: 1.5rem;
+    font-weight: 500;
+}
+
+/* SEÇÃO DE RESULTADOS */
+#resultados {
+    margin-bottom: 2rem;
+}
+
+#resultados h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* GRID DE CARDS - RESPONSIVO */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+/* CARD INDIVIDUAL */
+.card-clima {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: all var(--transition);
+    border: 1px solid var(--border);
+    animation: fadeIn 0.5s ease;
+}
+
+.card-clima:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-clima .cidade {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-clima .temp {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0.25rem 0;
+}
+
+.card-clima .condicao {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.card-clima .icone {
+    font-size: 3rem;
+    margin: 0.25rem 0;
+}
+
+.card-clima .detalhes {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* FAVORITOS */
+#favoritos {
+    background: var(--bg-card);
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: background var(--transition), box-shadow var(--transition);
+}
+
+#favoritos h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+#lista-favoritos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0.5rem 0;
+}
+
+#lista-favoritos li {
+    background: var(--bg-body);
+    padding: 0.25rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#lista-favoritos li button {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 0.25rem;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+}
+
+footer strong {
+    color: var(--text-secondary);
+}
+
+/* ANIMAÇÕES */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* SPINNER DE CARREGAMENTO */
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 2rem auto;
+    border: 4px solid var(--border);
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+    header {
+        padding: 0.75rem 1rem;
+    }
+
+    header nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    header nav ul {
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    #busca {
+        padding: 1.5rem 1rem;
+    }
+
+    #busca h2 {
+        font-size: 1.5rem;
+    }
+
+    .grupo-input {
+        flex-direction: column;
+    }
+
+    .grupo-input input {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .grupo-input button {
+        width: 100%;
+    }
+
+    .grid-cards {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+
+    .card-clima .temp {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .card-clima {
+        padding: 1rem;
+    }
+
+    .card-clima .temp {
+        font-size: 1.5rem;
+    }
+
+    .card-clima .icone {
+        font-size: 2rem;
+    }
+
+    #favoritos {
+        padding: 1rem;
+    }
+}
