@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AuraTemp · Previsão do Tempo</title>
     
-    <!-- Pré-conecta à API de clima para melhor performance (dica de HTTP/2) -->
     <link rel="preconnect" href="https://api.weatherapi.com">
     
-    <!-- CSS (vazio por enquanto, vamos estilizar na Sprint 2) -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -61,12 +59,11 @@
         <section id="resultados" aria-label="Previsões do tempo">
             <h2>Resultados</h2>
             <div id="container-cards" class="grid-cards">
-                <!-- Os cards serão injetados dinamicamente via JavaScript (Sprint 4) -->
                 <p id="mensagem-inicial" aria-live="polite">Pesquise uma cidade para ver a previsão.</p>
             </div>
         </section>
 
-        <!-- SEÇÃO DE FAVORITOS (BÔNUS) -->
+        <!-- SEÇÃO DE FAVORITOS -->
         <aside id="favoritos" aria-label="Cidades favoritas">
             <h2>⭐ Favoritas</h2>
             <ul id="lista-favoritos" aria-live="polite">
@@ -81,7 +78,6 @@
         <p>Dados fornecidos por <a href="https://www.weatherapi.com/" target="_blank" rel="noopener noreferrer">WeatherAPI</a></p>
     </footer>
 
-    <!-- JavaScript (Sprint 3 e 4) -->
     <script src="assets/js/app.js" defer></script>
 </body>
 </html>
