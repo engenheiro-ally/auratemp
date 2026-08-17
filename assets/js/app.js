@@ -1,12 +1,8 @@
-// =============================================
-// AURATEMP - JavaScript Completo (Sprint 3 - Corrigido)
-// =============================================
-
-//  CONFIGURAÇÕES INICIAIS
-const API_KEY = 'c60c30437c5347478f634124261708'; // Sua chave
+// CONFIGURAÇÕES INICIAIS
+const API_KEY = 'c60c30437c5347478f634124261708';
 const API_URL = 'https://api.weatherapi.com/v1/current.json';
 
-let buscando = false;
+let buscando = false; 
 
 // ELEMENTOS DO DOM
 const formBusca = document.getElementById('form-busca');
@@ -18,6 +14,7 @@ const mensagemInicial = document.getElementById('mensagem-inicial');
 
 // GERENCIAMENTO DE TEMA (DARK/LIGHT)
 
+// Cria o botão de toggle dinamicamente
 const headerNav = document.querySelector('header nav ul');
 const toggleLi = document.createElement('li');
 const toggleBtn = document.createElement('button');
@@ -107,6 +104,7 @@ function renderizarFavoritos() {
 
 // FUNÇÕES DE API (FETCH)
 
+// Atualiza um card existente com novos dados
 function atualizarCard(card, data) {
     const {
         location: { name, country },
@@ -127,8 +125,8 @@ function atualizarCard(card, data) {
     card.querySelector('.detalhes span:last-child').textContent = `💨 ${wind_kph} km/h`;
 }
 
+// Função principal de busca
 async function buscarClima(cidade) {
-    // Evita múltiplas buscas simultâneas
     if (buscando) {
         exibirStatus('⏳ Aguarde a busca atual terminar.', 'warning');
         return;
@@ -144,7 +142,6 @@ async function buscarClima(cidade) {
         }
     }
 
-    // Se o card já existe, atualiza em vez de criar outro
     if (cardExistente) {
         exibirStatus(`🔄 Atualizando dados de ${cidade}...`, 'loading');
         try {
@@ -278,7 +275,11 @@ function mostrarSpinner(ativo) {
 }
 
 // EVENTOS
+
+// O evento submit é o único responsável pela busca.
+// O Enter dentro do input já dispara o submit nativamente.
 formBusca.addEventListener('submit', async (e) => {
+    // Impede o recarregamento da página
     e.preventDefault();
 
     if (buscando) return;
@@ -289,28 +290,28 @@ formBusca.addEventListener('submit', async (e) => {
         return;
     }
 
+    // BLOQUEIO IMEDIATO
+    buscando = true;
     const btn = formBusca.querySelector('button[type="submit"]');
     btn.disabled = true;
     btn.textContent = '⏳ Buscando...';
 
+    // Executa a busca
     await buscarClima(cidade);
 
+    // LIBERA 
+    buscando = false;
     btn.disabled = false;
     btn.textContent = '🔍 Buscar';
     inputCidade.value = '';
     inputCidade.focus();
 });
 
-inputCidade.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        formBusca.dispatchEvent(new Event('submit'));
-    }
-});
-
 // INICIALIZAÇÃO
 
 carregarFavoritos();
 
+// CLICAR NA CIDADE FAVORITA PARA BUSCAR
 
 listaFavoritos.addEventListener('click', (e) => {
     const item = e.target.closest('li');
